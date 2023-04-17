@@ -1,0 +1,60 @@
+name: Build
+
+permissions:
+  deployments: write
+
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: 16.14.2
+  NPM_VERSION: 8.15.1
+  PYTHON_VERSION: 3.8
+
+jobs:
+  build-vsix:
+    name: Build VSIX
+    runs-on: ubuntu-latest
+    if: github.repository == 'microsoft/vscode-jupyter'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          repository: microsoft/vscode-jupyter
+
+      - name: Install dependencies for native modules
+        run: |
+          sudo apt-get update
+          sudo apt-get install libpango1.0-dev libgif-dev
+
+      - name: Use Node ${{env.NODE_VERSION}}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{env.NODE_VERSION}}
+
+      - name: Use Npm ${{env.NPM_VERSION}}
+        run: npm i -g npm@${{env.NPM_VERSION}}
+
+      - name: Use Python ${{env.PYTHON_VERSION}}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{env.PYTHON_VERSION}}
+
+      - name: Install Python libs
+        run: |
+          python -m pip --disable-pip-version-check install -t ./pythonFiles/lib/python --no-cache-dir --implementation py --no-deps --upgrade -r ./requirements.txt
+
+      - run: npm i -g @vscode/vsce
+      - run: npm ci --foreground-scripts --prefer-offline
+        env:
+          npm_config_build_from_source: true
+        shell: bash
+
+      # Run again, as the download of zmq binaries could have failed with 403 errors
+      - run: npm run postinstall
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+      - run: npm run clean
+      - run: npm run package
