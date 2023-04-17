@@ -57,3 +57,7 @@ jobs:
         shell: bash
       - run: npm run clean
       - run: npm run package
+      - uses: actions/upload-artifact@v3
+        with:
+          name: package
+          path: ms-toolsai-jupyter-insiders.vsix
