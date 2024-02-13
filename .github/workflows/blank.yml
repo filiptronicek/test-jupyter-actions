@@ -58,8 +58,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
       - run: |
-          npm run gulp clean
-          npm run gulp prePublishBundle
+          npm run package
           
           vsce package --target=linux-arm64
           vsce package --target=darwin-arm64
