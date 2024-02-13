@@ -57,8 +57,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
-      - run: npm run package
+      - run: |
+          npm run gulp clean
+          npm run gulp prePublishBundle
+          
+          vsce package --target=linux-arm64
+          vsce package --target=darwin-arm64
+          vsce package --target=alpine-x64
+          vsce package --target=alpine-arm64
+          vsce package --target=win32-arm64
+          vsce package --target=linux-armhf
+          vsce package --target=win32-x64
+          vsce package --target=darwin-arm64
+          vsce package --target=linux-x64
+
       - uses: actions/upload-artifact@v3
         with:
           name: package
-          path: ms-toolsai-jupyter-insiders.vsix
+          path: "*.vsix"
