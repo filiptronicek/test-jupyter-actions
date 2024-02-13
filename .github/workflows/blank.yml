@@ -13,8 +13,8 @@ on:
         description: The tag to use
 
 env:
-  NODE_VERSION: 16.14.2
-  NPM_VERSION: 8.15.1
+  NODE_VERSION: 18.15.0
+  NPM_VERSION: 9.5.0
   PYTHON_VERSION: 3.8
 
 jobs:
@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: microsoft/vscode-jupyter
           ref: ${{ github.event.inputs.message }}
@@ -34,7 +34,7 @@ jobs:
           sudo apt-get install libpango1.0-dev libgif-dev
 
       - name: Use Node ${{env.NODE_VERSION}}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{env.NODE_VERSION}}
 
@@ -42,7 +42,7 @@ jobs:
         run: npm i -g npm@${{env.NPM_VERSION}}
 
       - name: Use Python ${{env.PYTHON_VERSION}}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{env.PYTHON_VERSION}}
 
@@ -61,7 +61,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
-      - run: npm run clean
       - run: npm run package
       - uses: actions/upload-artifact@v3
         with:
