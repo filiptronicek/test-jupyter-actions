@@ -47,26 +47,23 @@ jobs:
           python-version: ${{env.PYTHON_VERSION}}
 
       - run: npm i -g @vscode/vsce
-      - run: npm ci --foreground-scripts --prefer-offline
-        env:
-          npm_config_build_from_source: true
-        shell: bash
 
       # Run again, as the download of zmq binaries could have failed with 403 errors
-      - run: npm run postinstall
+      - run: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          npm_config_build_from_source: true
         shell: bash
       - run: |
-          VSC_VSCE_TARGET=linux-arm64 npm ci --foreground-scripts && VSC_VSCE_TARGET=linux-arm64 npm run prePublishBundleStable
-          VSC_VSCE_TARGET=linux-armhf npm ci --foreground-scripts && VSC_VSCE_TARGET=linux-armhf npm run prePublishBundleStable
-          VSC_VSCE_TARGET=alpine-x64 npm ci --foreground-scripts && VSC_VSCE_TARGET=alpine-x64 npm run prePublishBundleStable
-          VSC_VSCE_TARGET=alpine-arm64 npm ci --foreground-scripts && VSC_VSCE_TARGET=alpine-arm64 npm run prePublishBundleStable
-          VSC_VSCE_TARGET=linux-x64 npm ci --foreground-scripts && VSC_VSCE_TARGET=linux-x64 npm run prePublishBundleStable
-          VSC_VSCE_TARGET=darwin-arm64 npm ci --foreground-scripts && VSC_VSCE_TARGET=darwin-arm64 npm run prePublishBundleStable
-          VSC_VSCE_TARGET=darwin-x64 npm ci --foreground-scripts && VSC_VSCE_TARGET=darwin-x64 npm run prePublishBundleStable
-          VSC_VSCE_TARGET=win32-x64 npm ci --foreground-scripts && VSC_VSCE_TARGET=win32-x64 npm run prePublishBundleStable
-          VSC_VSCE_TARGET=win32-arm64 npm ci --foreground-scripts && VSC_VSCE_TARGET=win32-arm64 npm run prePublishBundleStable
+          VSC_VSCE_TARGET=linux-arm64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=linux-arm64 npm run prePublishBundleStable
+          VSC_VSCE_TARGET=linux-armhf npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=linux-armhf npm run prePublishBundleStable
+          VSC_VSCE_TARGET=alpine-x64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=alpine-x64 npm run prePublishBundleStable
+          VSC_VSCE_TARGET=alpine-arm64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=alpine-arm64 npm run prePublishBundleStable
+          VSC_VSCE_TARGET=linux-x64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=linux-x64 npm run prePublishBundleStable
+          VSC_VSCE_TARGET=darwin-arm64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=darwin-arm64 npm run prePublishBundleStable
+          VSC_VSCE_TARGET=darwin-x64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=darwin-x64 npm run prePublishBundleStable
+          VSC_VSCE_TARGET=win32-x64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=win32-x64 npm run prePublishBundleStable
+          VSC_VSCE_TARGET=win32-arm64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=win32-arm64 npm run prePublishBundleStable
 
       - uses: actions/upload-artifact@v3
         with:
