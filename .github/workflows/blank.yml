@@ -58,17 +58,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
       - run: |
-          npm run package
-          
-          vsce package --target=linux-arm64
-          vsce package --target=darwin-arm64
-          vsce package --target=alpine-x64
-          vsce package --target=alpine-arm64
-          vsce package --target=win32-arm64
-          vsce package --target=linux-armhf
-          vsce package --target=win32-x64
-          vsce package --target=darwin-arm64
-          vsce package --target=linux-x64
+          VSC_VSCE_TARGET=linux-arm64 npm ci --foreground-scripts && VSC_VSCE_TARGET=linux-arm64 npm run prePublishBundleStable
+          VSC_VSCE_TARGET=linux-armhf npm ci --foreground-scripts && VSC_VSCE_TARGET=linux-armhf npm run prePublishBundleStable
+          VSC_VSCE_TARGET=alpine-x64 npm ci --foreground-scripts && VSC_VSCE_TARGET=alpine-x64 npm run prePublishBundleStable
+          VSC_VSCE_TARGET=alpine-arm64 npm ci --foreground-scripts && VSC_VSCE_TARGET=alpine-arm64 npm run prePublishBundleStable
+          VSC_VSCE_TARGET=linux-x64 npm ci --foreground-scripts && VSC_VSCE_TARGET=linux-x64 npm run prePublishBundleStable
+          VSC_VSCE_TARGET=darwin-arm64 npm ci --foreground-scripts && VSC_VSCE_TARGET=darwin-arm64 npm run prePublishBundleStable
+          VSC_VSCE_TARGET=darwin-x64 npm ci --foreground-scripts && VSC_VSCE_TARGET=darwin-x64 npm run prePublishBundleStable
+          VSC_VSCE_TARGET=win32-x64 npm ci --foreground-scripts && VSC_VSCE_TARGET=win32-x64 npm run prePublishBundleStable
+          VSC_VSCE_TARGET=win32-arm64 npm ci --foreground-scripts && VSC_VSCE_TARGET=win32-arm64 npm run prePublishBundleStable
 
       - uses: actions/upload-artifact@v3
         with:
