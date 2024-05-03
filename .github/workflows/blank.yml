@@ -49,12 +49,14 @@ jobs:
       - run: npm i -g @vscode/vsce
 
       # Run again, as the download of zmq binaries could have failed with 403 errors
-      - run: Build
+      - run: npm run postinstall
+
+      - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           npm_config_build_from_source: true
         shell: bash
-      - run: |
+        run: |
           VSC_VSCE_TARGET=linux-arm64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=linux-arm64 npm run prePublishBundleStable
           VSC_VSCE_TARGET=linux-armhf npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=linux-armhf npm run prePublishBundleStable
           VSC_VSCE_TARGET=alpine-x64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=alpine-x64 npm run prePublishBundleStable
