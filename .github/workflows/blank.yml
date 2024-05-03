@@ -54,15 +54,15 @@ jobs:
           npm_config_build_from_source: true
         shell: bash
         run: |
-          VSC_VSCE_TARGET=linux-arm64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=linux-arm64 npm run package --target=linux-arm64
-          VSC_VSCE_TARGET=linux-armhf npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=linux-armhf npm run package --target=linux-armhf
-          VSC_VSCE_TARGET=alpine-x64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=alpine-x64 npm run package --target=alpine-x64
-          VSC_VSCE_TARGET=alpine-arm64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=alpine-arm64 npm run package --target=alpine-arm64
-          VSC_VSCE_TARGET=linux-x64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=linux-x64 npm run package --target=linux-x64
-          VSC_VSCE_TARGET=darwin-arm64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=darwin-arm64 npm run package --target=darwin-arm64
-          VSC_VSCE_TARGET=darwin-x64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=darwin-x64 npm run package --target=darwin-x64
-          VSC_VSCE_TARGET=win32-x64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=win32-x64 npm run package --target=win32-x64
-          VSC_VSCE_TARGET=win32-arm64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=win32-arm64 npm run package --target=win32-arm64
+          VSC_VSCE_TARGET=linux-arm64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=linux-arm64 npm run prePublishBundle && vsce package --target=linux-arm64
+          VSC_VSCE_TARGET=linux-armhf npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=linux-armhf npm run prePublishBundle && vsce --target=linux-armhf
+          VSC_VSCE_TARGET=alpine-x64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=alpine-x64 npm run prePublishBundle && vsce package --target=alpine-x64
+          VSC_VSCE_TARGET=alpine-arm64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=alpine-arm64 npm run prePublishBundle && vsce package --target=alpine-arm64
+          VSC_VSCE_TARGET=linux-x64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=linux-x64 npm run prePublishBundle && vsce package --target=linux-x64
+          VSC_VSCE_TARGET=darwin-arm64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=darwin-arm64 npm run prePublishBundle && vsce package --target=darwin-arm64
+          VSC_VSCE_TARGET=darwin-x64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=darwin-x64 npm run prePublishBundle && vsce package --target=darwin-x64
+          VSC_VSCE_TARGET=win32-x64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=win32-x64 npm run prePublishBundle && vsce package --target=win32-x64
+          VSC_VSCE_TARGET=win32-arm64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=win32-arm64 npm run prePublishBundle && vsce package --target=win32-arm64
 
       - uses: actions/upload-artifact@v4
         with:
