@@ -48,9 +48,6 @@ jobs:
 
       - run: npm i -g @vscode/vsce
 
-      # Run again, as the download of zmq binaries could have failed with 403 errors
-      - run: npm run postinstall
-
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
