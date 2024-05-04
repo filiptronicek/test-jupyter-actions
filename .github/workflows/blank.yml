@@ -57,6 +57,9 @@ jobs:
 
       - name: Build and Package
         shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          npm_config_build_from_source: true
         run: |
           npm ci --foreground-scripts --prefer-offline
           npm run prePublishBundle
