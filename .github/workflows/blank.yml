@@ -19,8 +19,13 @@ env:
 
 jobs:
   build-vsix:
-    name: Build VSIX
+    name: Build VSIX for ${{ matrix.target }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: [linux-arm64, linux-armhf, alpine-x64, alpine-arm64, linux-x64, darwin-arm64, darwin-x64, win32-x64, win32-arm64]
+    env:
+      VSC_VSCE_TARGET: ${{ matrix.target }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,50 +34,35 @@ jobs:
           ref: ${{ github.event.inputs.ref }}
 
       - name: Install dependencies for native modules
+        if: contains(matrix.target, 'linux') || contains(matrix.target, 'alpine')
         run: |
           sudo apt-get update
           sudo apt-get install libpango1.0-dev libgif-dev
 
-      - name: Use Node ${{env.NODE_VERSION}}
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{env.NODE_VERSION}}
+          node-version: ${{ env.NODE_VERSION }}
 
-      - name: Use Npm ${{env.NPM_VERSION}}
-        run: npm i -g npm@${{env.NPM_VERSION}}
+      - name: Setup NPM
+        run: npm i -g npm@${{ env.NPM_VERSION }}
 
-      - name: Use Python ${{env.PYTHON_VERSION}}
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{env.PYTHON_VERSION}}
+          python-version: ${{ env.PYTHON_VERSION }}
 
-      - run: npm i -g @vscode/vsce
+      - name: Install VSCE
+        run: npm i -g @vscode/vsce
 
-      - name: Build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          npm_config_build_from_source: true
+      - name: Build and Package
         shell: bash
         run: |
-          VSC_VSCE_TARGET=linux-arm64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=linux-arm64 npm run prePublishBundle && vsce package --target=linux-arm64
-          mv *.vsix /tmp/
-          VSC_VSCE_TARGET=linux-armhf npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=linux-armhf npm run prePublishBundle && vsce package --target=linux-armhf
-          mv *.vsix /tmp/
-          VSC_VSCE_TARGET=alpine-x64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=alpine-x64 npm run prePublishBundle && vsce package --target=alpine-x64
-          mv *.vsix /tmp/
-          VSC_VSCE_TARGET=alpine-arm64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=alpine-arm64 npm run prePublishBundle && vsce package --target=alpine-arm64
-          mv *.vsix /tmp/
-          VSC_VSCE_TARGET=linux-x64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=linux-x64 npm run prePublishBundle && vsce package --target=linux-x64
-          mv *.vsix /tmp/
-          VSC_VSCE_TARGET=darwin-arm64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=darwin-arm64 npm run prePublishBundle && vsce package --target=darwin-arm64
-          mv *.vsix /tmp/
-          VSC_VSCE_TARGET=darwin-x64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=darwin-x64 npm run prePublishBundle && vsce package --target=darwin-x64
-          mv *.vsix /tmp/
-          VSC_VSCE_TARGET=win32-x64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=win32-x64 npm run prePublishBundle && vsce package --target=win32-x64
-          mv *.vsix /tmp/
-          VSC_VSCE_TARGET=win32-arm64 npm ci --foreground-scripts --prefer-offline && VSC_VSCE_TARGET=win32-arm64 npm run prePublishBundle && vsce package --target=win32-arm64
+          npm ci --foreground-scripts --prefer-offline
+          npm run prePublishBundle
+          vsce package --target=${{ env.VSC_VSCE_TARGET }}
 
       - uses: actions/upload-artifact@v4
         with:
-          name: package
-          path: "/tmp/*.vsix"
+          name: package-${{ matrix.target }}
+          path: "*.vsix"
